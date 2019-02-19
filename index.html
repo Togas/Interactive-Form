@@ -1,42 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Register for Full Stack Conf</title>
-  <link href="https://fonts.googleapis.com/css?family=Roboto:400,500,700" rel="stylesheet" type="text/css">
-	<link rel="stylesheet" href="css/style.css">
-</head>
-<body>
-	<div class="container">
-    
-    <header>
-      <span>Register for</span>
-      <h1>Full Stack Conf</h1>
-    </header>
-
-    <form action="index.html" method="post">
-              
-      <fieldset>         
-        <legend>Basic Info</legend>
-        
-        <label for="name">Name:</label>
-        <input type="text" id="name" name="user_name">
-        
-        <label for="mail">Email:</label>
-        <input type="email" id="mail" name="user_email">
-        
-        <label for="title">Job Role</label>
-        <select id="title" name="user_title">
-          <option value="full-stack js developer">Full Stack JavaScript Developer</option>
-          <option value="front-end developer">Front End Developer</option>
-          <option value="back-end developer">Back End Developer</option>
-          <option value="designer">Designer</option>          
-          <option value="student">Student</option>
-          <option value="other">Other</option>  
-        </select>           
-      </fieldset>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register for Full Stack Conf</title>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,500,700" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="css/style.css">
+  </head>
+  <body>
+    <div class="container">
       
+      <header>
+        <span>Register for</span>
+        <h1>Full Stack Conf</h1>
+      </header>
+      
+      <form action="index.html" method="post">
+        
+        <fieldset>         
+          <legend>Basic Info</legend>
+          
+          <label for="name">Name:</label>
+          <input type="text" id="name" name="user_name">
+          
+          <label for="mail">Email:</label>
+          <input type="email" id="mail" name="user_email">
+          
+          <label for="title">Job Role</label>
+          <select id="title" name="user_title">
+            <option value="full-stack js developer">Full Stack JavaScript Developer</option>
+            <option value="front-end developer">Front End Developer</option>
+            <option value="back-end developer">Back End Developer</option>
+            <option value="designer">Designer</option>          
+            <option value="student">Student</option>
+            <option value="other">Other</option>  
+          </select>           
+          <br><textarea id="other-title" placeholder="Your Job Role"></textarea>          	
+        </fieldset>
+        
       <fieldset class="shirt">
         <legend>T-Shirt Info</legend>
         
@@ -49,7 +50,7 @@
             <option value="extra large">XL</option>
           </select>
         </div>
-
+        
         <div>
           <label for="design">Design:</label>
           <select id="design" name="user_design">
@@ -81,7 +82,6 @@
         <label><input type="checkbox" name="node"> Node.js Workshop — Tuesday 1pm-4pm, $100</label>          
         <label><input type="checkbox" name="build-tools"> Build tools Workshop — Wednesday 9am-12pm, $100</label>
         <label><input type="checkbox" name="npm"> npm Workshop — Wednesday 1pm-4pm, $100</label>
-                  	
       </fieldset>
       <fieldset>
         <legend>Payment Info</legend>
@@ -150,6 +150,11 @@
       
     </form>
 
-	</div>
+  </div>
+  <script
+  src="https://code.jquery.com/jquery-2.2.4.min.js"
+  integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+  crossorigin="anonymous"></script>
+  <script src="js/script.js"></script>
 </body>
 </html>
