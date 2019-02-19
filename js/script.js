@@ -49,12 +49,17 @@ const failedValidationCreditCard = document.createElement("p");
 failedValidationEmail.textContent = "wrong e-mail format";
 failedValidationCheckbox.textContent =
   "you have to at least select one activity";
+  failedValidationEmail.style.backgroundColor='#FF7979';
+  failedValidationCheckbox.style.backgroundColor='#FF7979';
+  failedValidationCheckbox.style.border='1px solid grey';
+  failedValidationEmail.style.border='1px solid grey';
+  
+
+
 $(failedValidationEmail).insertAfter($("#mail"));
 activities.appendChild(failedValidationCheckbox);
-$(failedValidationEmail)
-  .hide();
-$(failedValidationCheckbox)
-  .hide();
+$(failedValidationEmail).hide();
+$(failedValidationCheckbox).hide();
 
 //calculates the costs of selected activities
 const calculateCostOfActivities = () => {
@@ -208,18 +213,16 @@ $("button").click(function(e) {
   if (checkMail($("#mail").val())) {
     console.log("valid mail");
   }
-  if (checkMail($("#mail").val()) == false) {
-    $(failedValidationEmail)
-      .slideDown(1000)
-      .delay(3000)
-      .slideUp();
+  if (validateCheckboxes() == false) {
+    window.scrollTo(0, 500);
+    $(failedValidationCheckbox)
+      .slideDown(1500);
     e.preventDefault();
   }
-  if (validateCheckboxes() == false) {
-    $(failedValidationCheckbox)
-      .slideDown(1000)
-      .delay(3000)
-      .slideUp();
+  if (checkMail($("#mail").val()) == false) {
+    window.scrollTo(0, 0);
+    $(failedValidationEmail)
+      .slideDown(1500);
     e.preventDefault();
   }
 });
