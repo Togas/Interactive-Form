@@ -42,6 +42,19 @@ document.querySelectorAll("#payment option")[1].setAttribute("selected", true);
 //validation
 $("#name").prop("required", true);
 $("#mail").prop("required", true);
+const failedValidationEmail = document.createElement("p");
+const failedValidationCheckbox = document.createElement("p");
+const failedValidationCreditCard = document.createElement("p");
+
+failedValidationEmail.textContent = "wrong e-mail format";
+failedValidationCheckbox.textContent =
+  "you have to at least select one activity";
+$(failedValidationEmail).insertAfter($("#mail"));
+activities.appendChild(failedValidationCheckbox);
+$(failedValidationEmail)
+  .hide();
+$(failedValidationCheckbox)
+  .hide();
 
 //calculates the costs of selected activities
 const calculateCostOfActivities = () => {
@@ -62,13 +75,12 @@ const checkMail = email => {
 
 //checks that at least one checkbox is selected
 const validateCheckboxes = () => {
-  var okay = false;
   for (var i = 0; i < checkBoxes.length; i++) {
     if (checkBoxes[i].checked) {
-      okay = true;
-      break;
+      return true;
     }
   }
+  return false;
 };
 
 //event listener for change/select job title
@@ -195,12 +207,19 @@ $("#payment").change(function() {
 $("button").click(function(e) {
   if (checkMail($("#mail").val())) {
     console.log("valid mail");
-  } else {
   }
   if (checkMail($("#mail").val()) == false) {
-    console.log("invalid mail");
+    $(failedValidationEmail)
+      .slideDown(1000)
+      .delay(3000)
+      .slideUp();
+    e.preventDefault();
   }
-  if (validateCheckboxes) {
-    alert("You have to select at least one activity");
+  if (validateCheckboxes() == false) {
+    $(failedValidationCheckbox)
+      .slideDown(1000)
+      .delay(3000)
+      .slideUp();
+    e.preventDefault();
   }
 });
