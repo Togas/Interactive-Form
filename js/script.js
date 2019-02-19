@@ -1,5 +1,7 @@
-//initial setup
+//select first textfield
 document.getElementById("name").select();
+
+//hides initially other job textfield
 const $other = $("#title option").eq(-1);
 $("#other-title").hide();
 let otherJobTextarea = false;
@@ -9,15 +11,30 @@ const design1 = "Theme - JS Puns";
 const design2 = "Theme - I ♥ JS";
 const shirtColors = document.querySelector("#color").children;
 const $shirtColors = $("#color").children();
-
-//activities setup
-const activities = document.querySelector(".activities");
-
 $shirtColors.hide();
 const option = document.createElement("option");
 option.textContent = "Please select a T-Shirt Design";
 option.selected = true;
 document.querySelector("#color").appendChild(option);
+
+//activities setup
+const activities = document.querySelector(".activities");
+const checkBoxLabels = document.querySelectorAll(".activities label");
+const checkBoxes = document.querySelectorAll(".activities input");
+const costMarker = document.createElement('p');
+
+
+
+//calculates the costs of selected activities
+const calculateCostOfActivities = () => {
+  let activitiesCounter = 0;
+  for (let i = 0; i < checkBoxes.length; i++) {
+      if(checkBoxes[i].checked){
+          activitiesCounter++;
+      }
+  }
+  return activitiesCounter= activitiesCounter*100 + "$";
+};
 
 //event listener for change/select job title
 $("#title").change(function() {
@@ -69,13 +86,11 @@ $("#design").change(function() {
 });
 
 activities.addEventListener("change", e => {
-  const checkBoxLabels = document.querySelectorAll(".activities label");
-  const checkBoxes = document.querySelectorAll(".activities input");
-
   for (let i = 0; i < checkBoxLabels.length; i++) {
     const resetCheckbox = () => {
       checkBoxLabels[i].style.color = "";
       checkBoxLabels[i].style.textDecoration = "";
+      checkBoxes[i].disabled=false;
     };
     const text = checkBoxLabels[i].textContent.toString().split("—");
     const date = text[1];
@@ -84,16 +99,22 @@ activities.addEventListener("change", e => {
     let dateRegex = new RegExp(onlyDate[0]);
 
     if (e.target.getAttribute("name") == checkBoxes[i].getAttribute("name")) {
-      if (checkBoxLabels[i].style.color == "grey") {
-       resetCheckbox();
-      }
+      
       continue;
     }
 
     if (e.target.nextSibling.textContent.match(dateRegex) != null) {
-      checkBoxes[i].checked = false;
+        if(checkBoxes[i].disabled){
+            resetCheckbox();      
+        } else {
+      checkBoxes[i].disabled=true;
       checkBoxLabels[i].style.color = "grey";
       checkBoxLabels[i].style.textDecoration = "line-through";
+        }
     }
+
   }
+  let price= calculateCostOfActivities();
+  costMarker.innerHTML=`costs for your selected activities: ${calculateCostOfActivities()}`;
+  activities.appendChild(costMarker);
 });
