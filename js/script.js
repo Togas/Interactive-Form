@@ -21,33 +21,55 @@ document.querySelector("#color").appendChild(option);
 const activities = document.querySelector(".activities");
 const checkBoxLabels = document.querySelectorAll(".activities label");
 const checkBoxes = document.querySelectorAll(".activities input");
-const costMarker = document.createElement('p');
+const costMarker = document.createElement("p");
 
-//payment setup: preselect credit-card and hide 
+//payment setup: preselect credit-card and hide
 //information about other payment methods
-const $paymentOptions = $('#payment option');
-$('fieldset').last().children().eq(-1).hide();
-$('fieldset').last().children().eq(-2).hide();
+const $paymentOptions = $("#payment option");
+$("fieldset")
+  .last()
+  .children()
+  .eq(-1)
+  .hide();
+$("fieldset")
+  .last()
+  .children()
+  .eq(-2)
+  .hide();
 $paymentOptions.eq(0).hide();
-document.querySelectorAll('#payment option')[1].setAttribute("selected", true);;
+document.querySelectorAll("#payment option")[1].setAttribute("selected", true);
 
+//validation
+$("#name").prop("required", true);
+$("#mail").prop("required", true);
 
 //calculates the costs of selected activities
 const calculateCostOfActivities = () => {
   let activitiesCounter = 0;
   for (let i = 0; i < checkBoxes.length; i++) {
-      if(checkBoxes[i].checked){
-          activitiesCounter++;
-      }
+    if (checkBoxes[i].checked) {
+      activitiesCounter++;
+    }
   }
-  return activitiesCounter= activitiesCounter*100 + "$";
+  return (activitiesCounter = activitiesCounter * 100 + "$");
 };
 
-const displayPayment= (payment)=>{
-    
-}
+//checks for valid e-mail
+const checkMail = email => {
+  const emailRegex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+  return emailRegex.test(email);
+};
 
-
+//checks that at least one checkbox is selected
+const validateCheckboxes = () => {
+  var okay = false;
+  for (var i = 0; i < checkBoxes.length; i++) {
+    if (checkBoxes[i].checked) {
+      okay = true;
+      break;
+    }
+  }
+};
 
 //event listener for change/select job title
 $("#title").change(function() {
@@ -103,7 +125,7 @@ activities.addEventListener("change", e => {
     const resetCheckbox = () => {
       checkBoxLabels[i].style.color = "";
       checkBoxLabels[i].style.textDecoration = "";
-      checkBoxes[i].disabled=false;
+      checkBoxes[i].disabled = false;
     };
     const text = checkBoxLabels[i].textContent.toString().split("—");
     const date = text[1];
@@ -112,40 +134,73 @@ activities.addEventListener("change", e => {
     let dateRegex = new RegExp(onlyDate[0]);
 
     if (e.target.getAttribute("name") == checkBoxes[i].getAttribute("name")) {
-      
       continue;
     }
 
     if (e.target.nextSibling.textContent.match(dateRegex) != null) {
-        if(checkBoxes[i].disabled){
-            resetCheckbox();      
-        } else {
-      checkBoxes[i].disabled=true;
-      checkBoxLabels[i].style.color = "grey";
-      checkBoxLabels[i].style.textDecoration = "line-through";
-        }
+      if (checkBoxes[i].disabled) {
+        resetCheckbox();
+      } else {
+        checkBoxes[i].disabled = true;
+        checkBoxLabels[i].style.color = "grey";
+        checkBoxLabels[i].style.textDecoration = "line-through";
+      }
     }
-
   }
-  costMarker.innerHTML=`costs for your selected activities: ${calculateCostOfActivities()}`;
+  costMarker.innerHTML = `costs for your selected activities: ${calculateCostOfActivities()}`;
   activities.appendChild(costMarker);
 });
 
-$('#payment').change(function(){
-    if($(this).val() == 'paypal'){
-        $('#credit-card').hide();
-        $('fieldset').last().children().eq(-2).show();
-        $('fieldset').last().children().eq(-1).hide();
+$("#payment").change(function() {
+  if ($(this).val() == "paypal") {
+    $("#credit-card").hide();
+    $("fieldset")
+      .last()
+      .children()
+      .eq(-2)
+      .show();
+    $("fieldset")
+      .last()
+      .children()
+      .eq(-1)
+      .hide();
+  } else if ($(this).val() == "bitcoin") {
+    $("#credit-card").hide();
+    $("fieldset")
+      .last()
+      .children()
+      .eq(-1)
+      .show();
+    $("fieldset")
+      .last()
+      .children()
+      .eq(-2)
+      .hide();
+  } else {
+    $("#credit-card").show();
+    $("fieldset")
+      .last()
+      .children()
+      .eq(-1)
+      .hide();
+    $("fieldset")
+      .last()
+      .children()
+      .eq(-2)
+      .hide();
+  }
+});
 
-    }
-    else if($(this).val() == 'bitcoin'){
-        $('#credit-card').hide()
-        $('fieldset').last().children().eq(-1).show();
-        $('fieldset').last().children().eq(-2).hide();
-    } else{ 
-        $('#credit-card').show();
-        $('fieldset').last().children().eq(-1).hide();
-        $('fieldset').last().children().eq(-2).hide();
-    }
-    
-})
+//submit button event listener
+$("button").click(function(e) {
+  if (checkMail($("#mail").val())) {
+    console.log("valid mail");
+  } else {
+  }
+  if (checkMail($("#mail").val()) == false) {
+    console.log("invalid mail");
+  }
+  if (validateCheckboxes) {
+    alert("You have to select at least one activity");
+  }
+});
