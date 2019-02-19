@@ -23,6 +23,13 @@ const checkBoxLabels = document.querySelectorAll(".activities label");
 const checkBoxes = document.querySelectorAll(".activities input");
 const costMarker = document.createElement('p');
 
+//payment setup: preselect credit-card and hide 
+//information about other payment methods
+const $paymentOptions = $('#payment option');
+$('fieldset').last().children().eq(-1).hide();
+$('fieldset').last().children().eq(-2).hide();
+$paymentOptions.eq(0).hide();
+document.querySelectorAll('#payment option')[1].setAttribute("selected", true);;
 
 
 //calculates the costs of selected activities
@@ -35,6 +42,12 @@ const calculateCostOfActivities = () => {
   }
   return activitiesCounter= activitiesCounter*100 + "$";
 };
+
+const displayPayment= (payment)=>{
+    
+}
+
+
 
 //event listener for change/select job title
 $("#title").change(function() {
@@ -114,7 +127,25 @@ activities.addEventListener("change", e => {
     }
 
   }
-  let price= calculateCostOfActivities();
   costMarker.innerHTML=`costs for your selected activities: ${calculateCostOfActivities()}`;
   activities.appendChild(costMarker);
 });
+
+$('#payment').change(function(){
+    if($(this).val() == 'paypal'){
+        $('#credit-card').hide();
+        $('fieldset').last().children().eq(-2).show();
+        $('fieldset').last().children().eq(-1).hide();
+
+    }
+    else if($(this).val() == 'bitcoin'){
+        $('#credit-card').hide()
+        $('fieldset').last().children().eq(-1).show();
+        $('fieldset').last().children().eq(-2).hide();
+    } else{ 
+        $('#credit-card').show();
+        $('fieldset').last().children().eq(-1).hide();
+        $('fieldset').last().children().eq(-2).hide();
+    }
+    
+})
