@@ -31,49 +31,47 @@ $("fieldset")
   .children()
   .eq(-1)
   .hide();
-  $("fieldset")
+$("fieldset")
   .last()
   .children()
   .eq(-2)
   .hide();
-  $paymentOptions.eq(0).hide();
-  document.querySelectorAll("#payment option")[1].setAttribute("selected", true);
-  
-  //validation
-  $("#name").prop("required", true);
-  $("#mail").prop("required", true);
-  $("#cc-num").prop("required", true);
-  
-  //creates validation errors
-  let creditCardError = false;
-  const failedValidationCreditCard = document.createElement("p");
-  const failedValidationEmail = document.createElement("p");
-  const failedValidationCheckbox = document.createElement("p");
-  const failedValidationZip = document.createElement("p");
+$paymentOptions.eq(0).hide();
+document.querySelectorAll("#payment option")[1].setAttribute("selected", true);
+
+//validation
+$("#name").prop("required", true);
+$("#mail").prop("required", true);
+
+//creates validation errors
+
+let creditCardError = false;
+let zipError = false;
+let cvvError = false;
+const failedValidationName = document.createElement('p');
+const failedValidationCreditCard = document.createElement("p");
+const failedValidationEmail = document.createElement("p");
+const failedValidationCheckbox = document.createElement("p");
+const failedValidationZip = document.createElement("p");
 const failedValidationCvv = document.createElement("p");
 
+failedValidationName.textContent='You must enter a name';
 failedValidationEmail.textContent = "wrong e-mail format";
 failedValidationCheckbox.textContent =
   "you have to at least select one activity";
-failedValidationZip.textContent = "Thats not a valid Zip Code";
-failedValidationCvv.textContent = "Thats not a valid CVV number";
+failedValidationName.style.backgroundColor = "#FF7979";
 failedValidationEmail.style.backgroundColor = "#FF7979";
 failedValidationCheckbox.style.backgroundColor = "#FF7979";
-failedValidationZip.style.backgroundColor = "#FF7979";
-failedValidationCvv.style.backgroundColor = "#FF7979";
+failedValidationName.style.border = "1px solid grey";
 failedValidationCheckbox.style.border = "1px solid grey";
-failedValidationEmail.style.border = "1px solid grey";
-failedValidationZip.style.border = "1px solid grey";
-failedValidationCvv.style.border = "1px solid grey";
+failedValidationName.style.border = "1px solid grey";
 
+$(failedValidationName).insertAfter($("#name"));
 $(failedValidationEmail).insertAfter($("#mail"));
 activities.appendChild(failedValidationCheckbox);
-$(failedValidationZip).insertAfter($("#zip"));
-$(failedValidationCvv).insertAfter($("#cvv"));
+$(failedValidationName).hide();
 $(failedValidationEmail).hide();
 $(failedValidationCheckbox).hide();
-$(failedValidationZip).hide();
-$(failedValidationCvv).hide();
 
 //calculates the costs of selected activities
 const calculateCostOfActivities = () => {
@@ -104,8 +102,8 @@ const validateCheckboxes = () => {
 
 //checks cardNumber
 const checkCardNumber = cardNumber => {
-    const cardNumberRegex = /^[0-9]{13,16}$/;
-    if (cardNumberRegex.test(cardNumber) == false) {
+  const cardNumberRegex = /^[0-9]{13,16}$/;
+  if (cardNumberRegex.test(cardNumber) == false) {
     if (creditCardError == false) {
       failedValidationCreditCard.textContent =
         "Thats not a valid credit card number";
@@ -113,25 +111,51 @@ const checkCardNumber = cardNumber => {
       failedValidationCreditCard.style.border = "1px solid grey";
       $(failedValidationCreditCard).hide();
       $(failedValidationCreditCard).insertAfter($("#cc-num"));
-      $(failedValidationCreditCard).slideDown(1500);
+      $(failedValidationCreditCard).slideDown(1000);
       creditCardError = true;
     }
   } else {
     $(failedValidationCreditCard).slideUp(1000);
-    creditCardError=false;
+    creditCardError = false;
   }
 };
 
 //checks zip code
 const checkZip = zipCode => {
-  const zipRegex = /[0-9]{5}/;
-  return zipRegex.test(zipCode);
+  const zipRegex = /^[0-9]{5}$/;
+  if (zipRegex.test(zipCode) == false) {
+    if (zipError == false) {
+      failedValidationZip.textContent = "Thats not a valid Zip Code";
+      failedValidationZip.style.backgroundColor = "#FF7979";
+      failedValidationZip.style.border = "1px solid grey";
+      $(failedValidationZip).hide();
+      $(failedValidationZip).insertAfter($("#zip"));
+      $(failedValidationZip).slideDown(1000);
+      zipError = true;
+    }
+  } else {
+    $(failedValidationZip).slideUp(1000);
+    zipError = false;
+  }
 };
 
 //checks CVV number
 const checkCvv = cvvNumber => {
-  const cvvRegex = /[0-9]{3}/;
-  return cvvRegex.test(cvvNumber);
+  const cvvRegex = /^[0-9]{3}$/;
+  if (cvvRegex.test(cvvNumber) == false) {
+    if (cvvError == false) {
+      failedValidationCvv.textContent = "Thats not a valid CVV number";
+      failedValidationCvv.style.backgroundColor = "#FF7979";
+      failedValidationCvv.style.border = "1px solid grey";
+      $(failedValidationCvv).hide();
+      $(failedValidationCvv).insertAfter($("#cvv"));
+      $(failedValidationCvv).slideDown(1000);
+      cvvError = true;
+    }
+  } else {
+    $(failedValidationCvv).slideUp(1000);
+    cvvError = false;
+  }
 };
 
 //event listener for change/select job title
@@ -183,6 +207,7 @@ $("#design").change(function() {
   }
 });
 
+//event listener for changing activities(events at the same time get crossed out)
 activities.addEventListener("change", e => {
   if ($(failedValidationCheckbox).is(":visible")) {
     $(failedValidationCheckbox).slideUp(1000);
@@ -217,6 +242,7 @@ activities.addEventListener("change", e => {
   activities.appendChild(costMarker);
 });
 
+//event listener for change in payment
 $("#payment").change(function() {
   if ($(this).val() == "paypal") {
     $("#credit-card").hide();
@@ -257,51 +283,74 @@ $("#payment").change(function() {
   }
 });
 
-//submit button event listener
+//submit button event listener and error display if validation fails
 $("button").click(function(e) {
-  if (checkCardNumber($("#cc-num").val()) == false) {
-    window.scrollTo(0, 1000);
-    e.preventDefault();
-  }
-  if (checkZip($("#zip").val()) == false) {
-    window.scrollTo(0, 1000);
-    $(failedValidationZip).slideDown(1500);
-    e.preventDefault();
-  }
-  if (checkCvv($("#cvv").val()) == false) {
-    window.scrollTo(0, 1000);
-    $(failedValidationCvv).slideDown(1500);
-    e.preventDefault();
-  }
+  if ($("#payment option:selected").html() == 'Credit Card') {
+      checkCardNumber($("#cc-num").val());
+      checkZip($("#zip").val());
+      checkCvv($("#cvv").val());
+    if (creditCardError) {
+      window.scrollTo(0, 1000);
+      e.preventDefault();
+    }
+    if (zipError) {
+        window.scrollTo(0, 1000);
+      $(failedValidationZip).slideDown(1500);
+      e.preventDefault();
+    }
+    if ( cvvError) {
+      window.scrollTo(0, 1000);
+      $(failedValidationCvv).slideDown(1500);
+      e.preventDefault();
+    }
+  } 
+
   if (validateCheckboxes() == false) {
     window.scrollTo(0, 500);
     $(failedValidationCheckbox).slideDown(1500);
     e.preventDefault();
   }
+  if($('#name').val()==''){
+      window.scrollTo(0,0);
+      $(failedValidationName).slideDown(1500);
+  }
   if (checkMail($("#mail").val()) == false) {
     window.scrollTo(0, 0);
     $(failedValidationEmail).slideDown(1500);
+    if ($("#mail").val() == "") {
+      $("#mail")
+        .next()
+        .html("Please enter your e-mail address");
+    } else {
+      $("#mail")
+        .next()
+        .html("Your e-mail was not in the right format");
+    }
     e.preventDefault();
   }
 });
 
 //event listener to close errors if you click into
+$("#name").click(function(e) {
+  if ($(failedValidationName).is(":visible")) {
+    $(failedValidationName).slideUp(1000);
+  }
+});
 $("#mail").click(function(e) {
   if ($(failedValidationEmail).is(":visible")) {
     $(failedValidationEmail).slideUp(1000);
   }
 });
-$("#cc-num").on("input", function(e) {
+if ($paymentOptions.eq(1)){
+$("#cc-num").on("input", function() {
   checkCardNumber($("#cc-num").val());
 });
 
-$("#zip").on(function(e) {
-  if ($(failedValidationZip).is(":visible")) {
-    $(failedValidationZip).slideUp(1000);
-  }
+$("#zip").on("input", function() {
+  checkZip($("#zip").val());
 });
-$("#cvv").on(function(e) {
-  if ($(failedValidationCvv).is(":visible")) {
-    $(failedValidationCvv).slideUp(1000);
-  }
+
+$("#cvv").on("input", function() {
+  checkCvv($("#cvv").val());
 });
+}
