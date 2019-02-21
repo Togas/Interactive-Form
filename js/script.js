@@ -330,7 +330,7 @@ $("button").click(function(e) {
   }
 });
 
-//event listener to close errors if you click into
+//event listener to close errors if you click into or select the right number format
 $("#name").click(function(e) {
   if ($(failedValidationName).is(":visible")) {
     $(failedValidationName).slideUp(1000);
