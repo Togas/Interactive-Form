@@ -1,4 +1,4 @@
-//select first textfield
+//selects first textfield
 document.getElementById("name").select();
 
 //hides initially other job textfield
@@ -6,7 +6,8 @@ const $other = $("#title option").eq(-1);
 $("#other-title").hide();
 let otherJobTextarea = false;
 
-//Tshirt setup
+/*Tshirt setup: hides intilially the shirt colors, so that you first have to select a design
+*/
 const design1 = "Theme - JS Puns";
 const design2 = "Theme - I ♥ JS";
 const shirtColors = document.querySelector("#color").children;
@@ -23,7 +24,7 @@ const checkBoxLabels = document.querySelectorAll(".activities label");
 const checkBoxes = document.querySelectorAll(".activities input");
 const costMarker = document.createElement("p");
 
-//payment setup: preselect credit-card and hide
+//payment setup: preselects credit-card and hides
 //information about other payment methods
 const $paymentOptions = $("#payment option");
 $("fieldset")
@@ -39,11 +40,13 @@ $("fieldset")
 $paymentOptions.eq(0).hide();
 document.querySelectorAll("#payment option")[1].setAttribute("selected", true);
 
-//validation
+//sets html validation
 $("#name").prop("required", true);
 $("#mail").prop("required", true);
 
-//creates validation errors
+/*creates validation errors for name, email and checkbox. I also added variables
+to check if error are already present so that only one error message is displayed
+*/
 
 let creditCardError = false;
 let zipError = false;
@@ -73,7 +76,8 @@ $(failedValidationName).hide();
 $(failedValidationEmail).hide();
 $(failedValidationCheckbox).hide();
 
-//calculates the costs of selected activities
+//calculates the costs of selected activities with for loop that checks how many checkboxes are selected
+// and adds the money amount since they all cost the same
 const calculateCostOfActivities = () => {
   let activitiesCounter = 0;
   for (let i = 0; i < checkBoxes.length; i++) {
@@ -84,7 +88,7 @@ const calculateCostOfActivities = () => {
   return (activitiesCounter = activitiesCounter * 100 + "$");
 };
 
-//checks for valid e-mail
+//checks for valid e-mail with rexex
 const checkMail = email => {
   const emailRegex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
   return emailRegex.test(email);
@@ -100,7 +104,7 @@ const validateCheckboxes = () => {
   return false;
 };
 
-//checks cardNumber
+//checks cardNumber with regex and if card number is wrong creates an error message
 const checkCardNumber = cardNumber => {
   const cardNumberRegex = /^[0-9]{13,16}$/;
   if (cardNumberRegex.test(cardNumber) == false) {
@@ -120,7 +124,7 @@ const checkCardNumber = cardNumber => {
   }
 };
 
-//checks zip code
+//checks zip code with regex and if zip code is wrong it creates an error message
 const checkZip = zipCode => {
   const zipRegex = /^[0-9]{5}$/;
   if (zipRegex.test(zipCode) == false) {
@@ -139,7 +143,7 @@ const checkZip = zipCode => {
   }
 };
 
-//checks CVV number
+//checks CVV number and if cvv is wrong it creates an error message
 const checkCvv = cvvNumber => {
   const cvvRegex = /^[0-9]{3}$/;
   if (cvvRegex.test(cvvNumber) == false) {
@@ -158,7 +162,8 @@ const checkCvv = cvvNumber => {
   }
 };
 
-//event listener for change/select job title
+//event listener for change/select job title. If other is selected the textare with job role 
+//is shown
 $("#title").change(function() {
   if (otherJobTextarea) {
     $("#other-title").hide();
@@ -172,8 +177,10 @@ $("#title").change(function() {
   }
 });
 
-// event listener for change/select TShirt Design. Note:I can select the elements also
-// with regex
+/* event listener for change/select T-Shirt Design. It displays only the colors which match the design
+and hides the others. If you change design it changes the selected color, but that works unfortunately 
+only once(I dont know why).
+*/ 
 $("#design").change(function() {
   for (let i = 0; i < shirtColors.length; i++) {
     if (shirtColors[i].textContent == "Please select a T-Shirt Design") {
@@ -207,7 +214,9 @@ $("#design").change(function() {
   }
 });
 
-//event listener for changing activities(events at the same time get crossed out)
+/*event listener for changing activities: Events at the same time get crossed out 
+and you have to uncheck the current checkbox to decross the checkboxes
+*/
 activities.addEventListener("change", e => {
   if ($(failedValidationCheckbox).is(":visible")) {
     $(failedValidationCheckbox).slideUp(1000);
@@ -242,7 +251,7 @@ activities.addEventListener("change", e => {
   activities.appendChild(costMarker);
 });
 
-//event listener for change in payment
+//event listener for change in payment. Displays only the information necessary for the selected payment
 $("#payment").change(function() {
   if ($(this).val() == "paypal") {
     $("#credit-card").hide();
@@ -283,7 +292,9 @@ $("#payment").change(function() {
   }
 });
 
-//submit button event listener and error display if validation fails
+/*submit button event listener: displays errors if validation fails and scrolls to the errors.
+Only submits the form if it is filled out correctly and forth no error messages occur
+*/
 $("button").click(function(e) {
   if ($("#payment option:selected").html() == 'Credit Card') {
       checkCardNumber($("#cc-num").val());
@@ -330,7 +341,8 @@ $("button").click(function(e) {
   }
 });
 
-//event listener to close errors if you click into or select the right number format
+//event listener to close errors if you click into name or email. Provides real-time validation for
+// the credit card input fields
 $("#name").click(function(e) {
   if ($(failedValidationName).is(":visible")) {
     $(failedValidationName).slideUp(1000);
