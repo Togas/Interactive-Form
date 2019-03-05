@@ -184,14 +184,13 @@ only once(I dont know why).
 $("#design").change(function() {
   for (let i = 0; i < shirtColors.length; i++) {
     if (shirtColors[i].textContent == "Please select a T-Shirt Design") {
-      console.log("deleted");
       document.querySelector("#color").removeChild(shirtColors[i]);
     }
   }
 
   if ($("#design option:selected").text() == design2) {
     if (shirtColors[0].hasAttribute("selected")) {
-      shirtColors[0].setAttribute("selected", false);
+      shirtColors[0].removeAttribute("selected");
     }
     shirtColors[0].style.display = "none";
     shirtColors[3].setAttribute("selected", true);
@@ -202,7 +201,7 @@ $("#design").change(function() {
     shirtColors[5].style.display = "";
   } else if ($("#design option:selected").text() == design1) {
     if (shirtColors[3].hasAttribute("selected")) {
-      shirtColors[3].setAttribute("selected", false);
+      shirtColors[3].removeAttribute("selected");
     }
     shirtColors[0].style.display = "";
     shirtColors[1].style.display = "";
